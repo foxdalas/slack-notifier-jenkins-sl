@@ -15,3 +15,8 @@ Boolean getTestSummary() {
   if(env.TEST_SUMMARY) return new Boolean(env.TEST_SUMMARY)
   return false
 }
+
+Boolean getBlueOceanLink() {
+  if(env.BLUE_OCEAN) return new Boolean(env.BLUE_OCEAN)
+  return true
+}

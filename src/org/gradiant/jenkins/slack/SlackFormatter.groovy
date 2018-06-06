@@ -7,7 +7,13 @@ String format(String title = '', String message = '', String testSummary = '') {
   def project = helper.getProjectName()
   def branch = helper.getBranchName()
   def buildNumber = helper.getBuildNumber()
-  def url = helper.getAbsoluteUrl()
+  def url = ""
+  if(helper.getBlueOceanLink()) {
+    url = env.RUN_DISPLAY_URL
+  } 
+  else {
+    url = helper.getAbsoluteUrl()
+  }
 
   def result = "${project} » ${branch} - #${buildNumber} ${title.trim()} (<${url}|Open>)"
   if(message) result = result + "\nChanges:\n\t ${message.trim()}"

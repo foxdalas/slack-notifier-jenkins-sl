@@ -10,6 +10,10 @@ int getBuildNumber() {
   return currentBuild.number
 }
 
+Boolean getBlueOceanLink() {
+  if(env.BLUE_OCEAN) return new Boolean(env.BLUE_OCEAN)
+  return true
+}
 
 String getAbsoluteUrl() {
   return currentBuild.absoluteUrl
