@@ -57,3 +57,7 @@ String getPreviousStatus() {
 
   return prev
 }
+
+String getBuildUser() {
+  return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
+}
