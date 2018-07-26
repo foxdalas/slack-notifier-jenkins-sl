@@ -63,5 +63,5 @@ String getBuildUser() {
   if (user == "") {
     return "ci"
   }
-  return user
+  return user.split("@")[0]
 }
