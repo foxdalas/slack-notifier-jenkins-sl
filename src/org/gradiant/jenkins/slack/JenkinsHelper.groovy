@@ -60,7 +60,7 @@ String getPreviousStatus() {
 
 String getBuildUser() {
   if (!currentBuild.rawBuild.getCause(Cause.UserIdCause)) {
-    return "ci"
+    return "jenkins"
   }
   return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId().split("@")[0]
 }
