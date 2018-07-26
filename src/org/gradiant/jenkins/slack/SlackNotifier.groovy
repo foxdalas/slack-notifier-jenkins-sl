@@ -43,7 +43,7 @@ void notifyResult() {
 
   def color = status.getStatusColor()
   def duration = helper.getDuration()
-  def user = getBuildUser()
+  def user = helper.getBuildUser()
 
   String changes = null
   if(config.getChangeList()) changes = helper.getChanges().join '\n'
