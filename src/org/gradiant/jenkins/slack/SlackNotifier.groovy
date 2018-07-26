@@ -54,7 +54,7 @@ void notifyResult() {
     testSummary = jenkinsTestsSummary.getTestSummary()
   }
 
-  def message = formatter.format "Build by ${user} ${statusMessage} after ${duration}", changes, testSummary
+  def message = formatter.format "Build by @${user} ${statusMessage} after ${duration}", changes, testSummary
 
   sender.send message, color
 }
