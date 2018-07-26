@@ -59,9 +59,8 @@ String getPreviousStatus() {
 }
 
 String getBuildUser() {
-  def user = currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId()
-  if (user == "") {
+  if (!currentBuild.rawBuild.getCause(Cause.UserIdCause)) {
     return "ci"
   }
-  return user.split("@")[0]
+  return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId().split("@")[0]
 }
