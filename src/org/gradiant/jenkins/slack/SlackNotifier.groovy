@@ -43,6 +43,7 @@ void notifyResult() {
 
   def color = status.getStatusColor()
   def duration = helper.getDuration()
+  def user = helper.getBuildUser()
 
   String changes = null
   if(config.getChangeList()) changes = helper.getChanges().join '\n'
@@ -53,7 +54,7 @@ void notifyResult() {
     testSummary = jenkinsTestsSummary.getTestSummary()
   }
 
-  def message = formatter.format "${statusMessage} after ${duration}", changes, testSummary
+  def message = formatter.format "Build by ${user} ${statusMessage} after ${duration}", changes, testSummary
 
   sender.send message, color
 }
