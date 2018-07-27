@@ -1,6 +1,5 @@
 package org.gradiant.jenkins.slack
 
-
 void notifyStart() {
   SlackFormatter formatter = new SlackFormatter()
   SlackSender sender = new SlackSender()
