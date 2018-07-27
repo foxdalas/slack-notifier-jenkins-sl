@@ -65,3 +65,8 @@ void notifyResultFull() {
   env.NOTIFY_SUCCESS = true
   notifyResult()
 }
+
+String getChangelog() {
+   JenkinsHelper helper = new JenkinsHelper()
+   return helper.getChangelog()
+}

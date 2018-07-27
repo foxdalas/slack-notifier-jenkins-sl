@@ -64,3 +64,17 @@ String getBuildUser() {
   }
   return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId().split("@")[0]
 }
+
+String getChangelog() {
+  def messages = []
+  def changeLogSets = currentBuild.rawBuild.changeSets
+  for (int i = 0; i < changeLogSets.size(); i++) {
+    def entries = changeLogSets[i].items
+    for (int j = 0; j < entries.length; j++) {
+      def entry = entries[j]
+      messages << "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
+    }
+  }
+  return messages.join("\n")
+}
+
