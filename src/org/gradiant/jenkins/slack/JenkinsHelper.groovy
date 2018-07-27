@@ -1,6 +1,6 @@
 package org.gradiant.jenkins.slack
 
-import hudson.FilePath;
+import hudson.FilePath
 
 String getBranchName() {
   return env.BRANCH_NAME

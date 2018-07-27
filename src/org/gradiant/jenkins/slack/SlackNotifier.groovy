@@ -1,4 +1,5 @@
 package org.gradiant.jenkins.slack
+import hudson.FilePath
 
 void notifyStart() {
   SlackFormatter formatter = new SlackFormatter()
