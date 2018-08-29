@@ -73,7 +73,7 @@ String getChangelog() {
     def entries = changeLogSets[i].items
     for (int j = 0; j < entries.length; j++) {
       def entry = entries[j]
-      messages << "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
+      messages << "${j+1}: ${entry.msg} ${entry.author}"
     }
   }
   return messages.join("\n")
