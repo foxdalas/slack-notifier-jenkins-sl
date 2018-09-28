@@ -15,3 +15,12 @@ def BuildContainer(name, image, dockerFile) {
     }
   }
 }
+
+def PrepareGoPath(repoPrefix, projectName) {
+  return {
+    sh """
+      mkdir -p /go/src/${repoPrefix}
+      ln -sf ${env.WORKSPACE} /go/src/${repoPrefix}/${projectName}
+    """
+  }
+}
