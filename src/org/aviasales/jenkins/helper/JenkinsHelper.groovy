@@ -14,6 +14,15 @@ def BuildContainer(image, dockerFile, dir) {
   }
 }
 
+def BuildContainerKaniko(image, dockerFile, dir) {
+  container(name: 'kaniko', shell: '/busybox/sh') {
+    ansiColor('xterm') {
+      sh "/kaniko/executor --dockerfile=${dockerFile} --context=${dir} --cache=true --cache-dir=/cache/docker --destination=hub.docker.com/aviasales/${image}/${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+    }
+  }
+}
+
+
 def PrepareGoPath(repoPrefix, projectName) {
   return {
     sh """
