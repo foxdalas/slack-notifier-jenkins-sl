@@ -15,12 +15,10 @@ def BuildContainer(image, dockerFile, dir) {
 }
 
 def BuildContainerKaniko(image, dockerFile, dir) {
-  container(name: 'kaniko') {
+  container(name: 'kaniko', shell: '/busybox/sh') {
     ansiColor('xterm') {
-      sh """
-        #!/busybox/sh
-        /kaniko/executor --dockerfile=${dockerFile} --context=${dir} --cache=true --cache-dir=/cache/docker --destination=hub.docker.com/aviasales/${image}/${env.BRANCH_NAME}-${env.BUILD_NUMBER}
-      """
+      echo "/kaniko/executor -f ${dockerFile} -c ${dir} --cache=true --cache-dir=/cache/docker -d hub.docker.com/aviasales/${image}/${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+      sh "/kaniko/executor -f ${dockerFile} -c ${dir} --cache=true --cache-dir=/cache/docker -d hub.docker.com/aviasales/${image}/${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
     }
   }
 }
