@@ -19,7 +19,7 @@ def BuildContainerKaniko(image, dockerFile, dir) {
     ansiColor('xterm') {
       withEnv(['PATH+EXTRA=/busybox:/kaniko']) {
         sh """#!/busybox/sh
-        executor -f ${dockerFile} --context=dir://${env.WORKSPACE} --no-push --cache-dir=/cache/docker -v warn
+        executor -f ${dockerFile} --context=dir://${env.WORKSPACE} --no-push --cache=false -v warn
         """    
       }
     }
