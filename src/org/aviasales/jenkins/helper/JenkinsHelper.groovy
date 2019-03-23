@@ -19,7 +19,7 @@ def BuildContainerKaniko(image, dockerFile, dir) {
     ansiColor('xterm') {
       withEnv(['PATH+EXTRA=/busybox:/kaniko']) {
         sh """#!/busybox/sh
-        executor -f ${dockerFile} --context=dir://${env.WORKSPACE} --no-push --cache=false -v warn
+        executor -f ${dockerFile} --context=dir://${env.WORKSPACE}  --cache=true --cache-dir=/cache/docker -d hub.docker.com/aviasales/${image}/${env.BRANCH_NAME}-${env.BUILD_NUMBER} -v warn
         """    
       }
     }
