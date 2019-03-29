@@ -3,13 +3,11 @@ package org.aviasales.jenkins.helper
 def BuildContainer(image, dockerFile, dir) {
   container('docker') {
     ansiColor('xterm') {
-      docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-        def dockerImage = docker.build(image, "-f ${dockerFile} ${dir}")
-        retry(5) {
-          dockerImage.push("${env.BRANCH_NAME}-${env.BUILD_NUMBER}")
-          if (env.BRANCH_NAME == 'master') {
-            dockerImage.push("stable")
-          }
+      def dockerImage = docker.build(image, "-f ${dockerFile} ${dir}")
+      retry(5) {
+        dockerImage.push("${env.BRANCH_NAME}-${env.BUILD_NUMBER}")
+        if (env.BRANCH_NAME == 'master') {
+          dockerImage.push("stable")
         }
       }
     }
@@ -63,33 +61,16 @@ def getLastSuccessfulCommit() {
   return lastSuccessfulHash
 }
 
-def getRepoURL() {
-  sh "git config --get remote.origin.url > .git/remote-url"
-  return readFile(".git/remote-url").trim()
-}
-
-def getCommitSha() {
-  sh "git rev-parse HEAD > .git/current-commit"
-  return readFile(".git/current-commit").trim()
-}
-
-def notifyIntegrationTests(build) {
-  repoUrl = getRepoURL()
-  commitSha = getCommitSha()
-
-  step([
-    $class: 'GitHubCommitStatusSetter',
-    reposSource: [$class: "ManuallyEnteredRepositorySource", url: repoUrl],
-    commitShaSource: [$class: "ManuallyEnteredShaSource", sha: commitSha],
-    contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/integrations-tests"],
-    errorHandlers: [[$class: 'ShallowAnyErrorHandler']],
-    statusResultSource: [
-      $class: 'ConditionalStatusResultSource',
-      results: [
-        [$class: 'BetterThanOrEqualBuildResult', result: 'SUCCESS', state: 'SUCCESS', message: build.description],
-        [$class: 'BetterThanOrEqualBuildResult', result: 'FAILURE', state: 'FAILURE', message: build.description],
-        [$class: 'AnyBuildResult', state: 'FAILURE', message: 'Loophole']
-      ]
-    ]
-  ])
+def checkPrometheusAlerts(dir) {
+  container('golang') {
+    stage("Checking monitoring rules if exist") {
+      sh "go get -u github.com/prometheus/prometheus/cmd/promtool"
+      def rules = findFiles(glob: "${dir}/*.yml")
+      def rulesFiles = []
+      rules.each { rule ->
+        rulesFiles << rule.path
+      }
+      sh "promtool check rules ${rulesFiles.join(" ")}"
+    }
+  }
 }
