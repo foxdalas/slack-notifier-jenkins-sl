@@ -64,7 +64,6 @@ def getLastSuccessfulCommit() {
 def checkPrometheusAlerts(dir) {
   container('golang') {
     stage("Checking monitoring rules if exist") {
-      sh "go get -u github.com/prometheus/prometheus/cmd/promtool"
       def rules = findFiles(glob: "${dir}/*.yml")
       def rulesFiles = []
       rules.each { rule ->
