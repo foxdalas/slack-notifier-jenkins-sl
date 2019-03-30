@@ -75,6 +75,8 @@ def checkPrometheusAlerts(dir) {
 }
 
 def getApplications(dir) {
-  def subfolders = sh(returnStdout: true, script: 'ls -d assisted/*').trim().split(System.getProperty("line.separator"))
+  //def subfolders = sh(returnStdout: true, script: 'ls -d assisted/*').trim().split(System.getProperty("line.separator"))
+  def subfolders = sh(returnStdout: true, script: 'ls -d assisted/*').trim().split("/")
+
   return subfolders
 }
