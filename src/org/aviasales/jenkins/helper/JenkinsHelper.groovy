@@ -14,6 +14,21 @@ def BuildContainer(image, dockerFile, dir) {
   }
 }
 
+def BuildContainerDeclarative(image, dockerFile, dir) {
+  stage(image) {
+    container('docker') {
+      def dockerImage = docker.build(image, "-f ${dockerFile} ${dir}")
+      retry(5) {
+        dockerImage.push("${env.BRANCH_NAME}-${env.BUILD_NUMBER}")
+        if (env.BRANCH_NAME == 'master') {
+          dockerImage.push("stable")
+        }
+      }
+    }
+  }
+}
+
+
 def BuildContainerKaniko(image, dockerFile, dir) {
   container(name: 'kaniko', shell: '/busybox/sh') {
     ansiColor('xterm') {
