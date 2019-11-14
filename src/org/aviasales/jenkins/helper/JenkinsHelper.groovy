@@ -1,5 +1,7 @@
 package org.aviasales.jenkins.helper
 
+import hudson.FilePath
+
 def BuildContainer(image, dockerFile, dir) {
   container('docker') {
     ansiColor('xterm') {
