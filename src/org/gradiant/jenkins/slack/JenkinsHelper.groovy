@@ -1,11 +1,11 @@
 package org.gradiant.jenkins.slack
 
 import hudson.FilePath
+import groovy.json.JsonSlurper
 
 String getBranchName() {
   return env.BRANCH_NAME
 }
-
 
 int getBuildNumber() {
   return currentBuild.number
@@ -66,6 +66,24 @@ String getBuildUser() {
   return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId().split("@")[0]
 }
 
+String getSlackUserByGithub(sapogApiUrl) {
+  def slackUser = ''
+  def commit = sh(returnStdout: true, script: 'git rev-parse HEAD')
+  def author = sh(returnStdout: true, script: "git --no-pager show -s --format='%an' ${commit}").trim()
+  try {
+    def url = new URL("${sapogApiUrl}/${author}").openConnection();
+    url.connectTimeout = 60000
+    def responseCode = url.getResponseCode();
+    if(responseCode.equals(200)) {
+      def sapog = new JsonSlurper().parseText(url.getInputStream().getText());
+      if(sapog.success) {
+        return "@${sapog.data.slack}";
+      }
+    }
+  } catch (Exception e) {}
+  return slackUser
+}
+
 String getChangelog() {
   def messages = []
   def changeLogSets = currentBuild.rawBuild.changeSets
@@ -78,4 +96,3 @@ String getChangelog() {
   }
   return messages.join("\n")
 }
-
