@@ -1,6 +1,7 @@
 package org.gradiant.jenkins.slack
 
 import hudson.FilePath
+import groovy.json.JsonSlurper
 
 String getBranchName() {
   return env.BRANCH_NAME
@@ -66,6 +67,37 @@ String getBuildUser() {
   return currentBuild.rawBuild.getCause(Cause.UserIdCause).getUserId().split("@")[0]
 }
 
+String getSlackUserByGithub(sapogApiUrl) {
+  def slackUser = ''
+  try {
+    def commit = sh(returnStdout: true, script: 'git rev-parse HEAD')
+    def author = sh(returnStdout: true, script: "git --no-pager show -s --format='%an' ${commit}").trim()
+    def body = "{\"username\": \"${author}\"}"
+    def http = new URL("${sapogApiUrl}").openConnection() as HttpURLConnection
+
+    http.setRequestMethod('POST')
+    http.setDoOutput(true)
+    http.setRequestProperty("Accept", 'application/json')
+    http.setRequestProperty("Content-Type", 'application/json')
+    http.outputStream.write(body.getBytes("UTF-8"))
+    http.connect()
+
+    if (http.responseCode == 200) {
+      def sapog = new JsonSlurper().parseText(http.inputStream.getText('UTF-8'))
+      if(sapog.success) {
+        slackUser = "@${sapog.data.slack}";
+      } else {
+        println("[ DEBUG ] response message: ${sapog.message}")
+      }
+    } else {
+      println("[ DEBUG ] response code: ${http.responseCode}")
+    }
+  } catch (Exception e) {
+    println("[ DEBUG ] getSlackUserByGithub exception: ${e}")
+  }
+  return slackUser
+}
+
 String getChangelog() {
   def messages = []
   def changeLogSets = currentBuild.rawBuild.changeSets
@@ -78,4 +110,3 @@ String getChangelog() {
   }
   return messages.join("\n")
 }
-
