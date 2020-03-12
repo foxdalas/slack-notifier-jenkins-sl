@@ -22,6 +22,15 @@ void notifyError(Throwable err) {
   sender.send message, color
 }
 
+void notifyStringError(String msg) {
+  def formatter = new SlackFormatter()
+  def sender = new SlackSender()
+  def color = new Color().red()
+
+  def message = formatter.format "An error occurred :interrobang:", msg
+  sender.send message, color
+}
+
 boolean shouldNotNotifySuccess(statusMessage) {
   Config config = new Config()
   return statusMessage == 'Success' && !config.getNotifySuccess()

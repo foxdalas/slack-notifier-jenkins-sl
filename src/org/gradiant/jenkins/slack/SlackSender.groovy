@@ -21,8 +21,8 @@ def getOptions(String message = '', String color = '') {
   }
 
   if (env.SLACK_DIRECT) {
-    if (env.BRANCH_NAME == 'master') {
-      println("[ DEBUG ] BRANCH_NAME == master, using default params...")
+    if (env.BRANCH_NAME ==~ /(^master$|^release\/.+)/) {
+      println("[ DEBUG ] BRANCH_NAME == master OR release*, using default params...")
     } else {
       def slackDirect = new Boolean(env.SLACK_DIRECT)
       def slackDirectApiUrl = env.SLACK_DIRECT_API_URL
