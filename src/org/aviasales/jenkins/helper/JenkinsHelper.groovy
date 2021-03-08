@@ -98,7 +98,8 @@ def getSubfolders(dir) {
   return subfolders
 }
 
-def getChecksum(file, type) {
+def getChecksum(path, type) {
+  def file = new File (path)  
   def digest = MessageDigest.getInstance(type)
   def inputstream = file.newInputStream()
   def buffer = new byte[16384]
