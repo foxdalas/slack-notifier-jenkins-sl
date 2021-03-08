@@ -1,5 +1,6 @@
 package org.aviasales.jenkins.helper
 
+import hudson.FilePath
 import java.security.MessageDigest
 import java.io.*
 
@@ -97,25 +98,25 @@ def getSubfolders(dir) {
   return subfolders
 }
 
-// def getChecksum(path, type) {
-//   def file = new File (path)  
-//   def digest = MessageDigest.getInstance(type)
-//   def inputstream = file.newInputStream()
-//   def buffer = new byte[16384]
-//   def len
+def getChecksum(path, type) {
+  def file = new File (path)  
+  def digest = MessageDigest.getInstance(type)
+  def inputstream = file.newInputStream()
+  def buffer = new byte[16384]
+  def len
 
-//   while((len=inputstream.read(buffer)) > 0) {
-//     digest.update(buffer, 0, len)
-//   }
-//   inputstream.close();
-//   def sha1sum = digest.digest()
+  while((len=inputstream.read(buffer)) > 0) {
+    digest.update(buffer, 0, len)
+  }
+  inputstream.close();
+  def sha1sum = digest.digest()
 
-//   def result = ""
-//   for(byte b : sha1sum) {
-//     result += toHex(b)
-//   }
-//   return result
-// }
+  def result = ""
+  for(byte b : sha1sum) {
+    result += toHex(b)
+  }
+  return result
+}
 
 
 
