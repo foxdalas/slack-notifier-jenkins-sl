@@ -1,6 +1,5 @@
 package org.aviasales.jenkins.helper
 
-import hudson.FilePath
 import java.security.MessageDigest
 import java.io.*
 
