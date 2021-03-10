@@ -118,5 +118,47 @@ def getChecksum(path, type) {
   return result
 }
 
+def abortPreviousRunningBuilds() {
+  def hi = Hudson.instance
+  def pname = env.JOB_NAME.split('/')[0]
 
+  hi.getItem(pname).getItem(env.JOB_BASE_NAME).getBuilds().each { build ->
+    def exec = build.getExecutor()
+
+    if (build.number != currentBuild.number && exec != null) {
+      if (env.BRANCH_NAME != "master") {
+        exec.interrupt(
+            Result.ABORTED,
+            new CauseOfInterruption.UserInterruption(
+                "Aborted by #${currentBuild.number}"
+            )
+        )
+        println("Aborted previous running build #${build.number}")
+      } else {
+        println("Master branch! Skip abort")
+      }
+    } else {
+      println("Build is not running or is current build, not aborting - #${build.number}")
+    }
+  }
+}
+
+def catchUnstable(command) {
+  script {
+    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+      sh command
+    }
+  }
+}
+
+def prepareCache(baseFile, source, destination) {
+  script {
+    def md5 = sh([ script: "md5sum ${baseFile} | awk '{print \$1}'", returnStdout: true ]).trim()
+    def folder = new File( "${source}/${md5}")
+    if(folder.exists() ) {
+      sh "mkdir -p ${destination}"
+      sh "ls -A -1 ${source}/${md5} | parallel --gnu -v -j20 rsync -arp ${source}/${md5}/{} ${destination}"
+    }
+  }
+}
 
