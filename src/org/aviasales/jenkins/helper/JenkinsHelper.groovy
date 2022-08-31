@@ -173,7 +173,6 @@ def getSlackSaloUserByEmail(email) {
     http.setDoOutput(true)
     http.setRequestProperty("Accept", 'application/json')
     http.setRequestProperty("Content-Type", 'application/json')
-    http.outputStream.write(body.getBytes("UTF-8"))
     http.connect()
 
     if (http.responseCode == 200) {
@@ -202,7 +201,6 @@ def getSlackSaloUserIdByEmail(email) {
     http.setDoOutput(true)
     http.setRequestProperty("Accept", 'application/json')
     http.setRequestProperty("Content-Type", 'application/json')
-    http.outputStream.write(body.getBytes("UTF-8"))
     http.connect()
 
     if (http.responseCode == 200) {
