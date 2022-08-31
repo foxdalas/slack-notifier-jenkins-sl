@@ -162,3 +162,60 @@ def prepareCache(baseFile, source, destination) {
   }
 }
 
+def getSlackSaloUserByEmail(email) {
+  def userName = ''
+  def sapogSimpleApiUrl = env.SAPOG_SIMPLE_URL
+  try {
+    def http = new URL("${sapogSimpleApiUrl}${email}").openConnection() as HttpURLConnection
+
+    http.setRequestMethod('GET')
+    http.setDoOutput(true)
+    http.setRequestProperty("Accept", 'application/json')
+    http.setRequestProperty("Content-Type", 'application/json')
+    http.outputStream.write(body.getBytes("UTF-8"))
+    http.connect()
+
+    if (http.responseCode == 200) {
+      def sapogResponse = new JsonSlurper().parseText(http.inputStream.getText('UTF-8'))
+      if(sapogResponse.success) {
+        userName = "${sapogResponse.data.name}";
+      } else {
+        println("[ getSlackSaloUserByEmail ] response message: ${sapogResponse.message}")
+      }
+    } else {
+      println("[ getSlackSaloUserByEmail ] response code: ${http.responseCode}")
+    }
+  } catch (Exception e) {
+    println("[ getSlackSaloUserByEmail ] exception: ${e}")
+  }
+  return userName
+}
+
+def getSlackSaloUserIdByEmail(email) {
+  def userId = ''
+  def sapogSimpleApiUrl = env.SAPOG_SIMPLE_URL
+  try {
+    def http = new URL("${sapogSimpleApiUrl}${email}").openConnection() as HttpURLConnection
+
+    http.setRequestMethod('GET')
+    http.setDoOutput(true)
+    http.setRequestProperty("Accept", 'application/json')
+    http.setRequestProperty("Content-Type", 'application/json')
+    http.outputStream.write(body.getBytes("UTF-8"))
+    http.connect()
+
+    if (http.responseCode == 200) {
+      def sapogResponse = new JsonSlurper().parseText(http.inputStream.getText('UTF-8'))
+      if(sapogResponse.success) {
+        userId = "${sapogResponse.data.user_id}";
+      } else {
+        println("[ getSlackSaloUserIdByEmail ] response message: ${sapogResponse.message}")
+      }
+    } else {
+      println("[ getSlackSaloUserIdByEmail ] response code: ${http.responseCode}")
+    }
+  } catch (Exception e) {
+    println("[ getSlackSaloUserIdByEmail ] exception: ${e}")
+  }
+  return userId
+}
