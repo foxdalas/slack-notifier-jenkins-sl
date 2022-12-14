@@ -3,7 +3,10 @@
 def call(credentialsId, image, dockerFile, dir) {
   container('docker') {
     ansiColor('xterm') {
-      withDockerRegistry([credentialsId: credentialsId]) {
+      withCredentials([file(credentialsId: 'dockerhub', variable: 'SecretFile')]) {
+        sh "mkdir -p /root/.docker/config.json"
+        sh "cp $SecretFile ~/.docker/config.json"
+
         def dockerImage = docker.build(image, "-f ${dockerFile} ${dir}")
         retry(5) {
           dockerImage.push("${env.BRANCH_NAME}-${env.BUILD_NUMBER}")
