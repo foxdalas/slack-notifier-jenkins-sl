@@ -40,7 +40,7 @@ def BuildContainerKaniko(image, dockerFile, dir) {
       withEnv(['PATH+EXTRA=/busybox:/kaniko']) {
         sh """#!/busybox/sh
         executor -f ${dockerFile} --context=dir://${env.WORKSPACE}  --cache=true --cache-dir=/cache/docker -d hub.docker.com/aviasales/${image}/${env.BRANCH_NAME}-${env.BUILD_NUMBER} -v warn
-        """    
+        """
       }
     }
   }
@@ -84,7 +84,7 @@ def getLastSuccessfulCommit() {
 def checkPrometheusAlerts(dir) {
   container('golang') {
     stage("Checking monitoring rules if exist") {
-      def rules = findFiles(glob: "${dir}/*.yml")
+      def rules = findFiles(glob: "${dir}/**/*.yml")
       def rulesFiles = []
       rules.each { rule ->
         rulesFiles << rule.path
@@ -100,7 +100,7 @@ def getSubfolders(dir) {
 }
 
 def getChecksum(path, type) {
-  def file = new File (path)  
+  def file = new File (path)
   def digest = MessageDigest.getInstance(type)
   def inputstream = file.newInputStream()
   def buffer = new byte[16384]
