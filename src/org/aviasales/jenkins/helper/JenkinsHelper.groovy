@@ -165,9 +165,9 @@ def prepareCache(baseFile, source, destination) {
 
 def getSlackSaloUserByEmail(email) {
   def userName = ''
-  def sapogSimpleApiUrl = env.SAPOG_SIMPLE_URL
+  def sapogApiUrl = env.SAPOG_URL
   try {
-    def http = new URL("${sapogSimpleApiUrl}${email}").openConnection() as HttpURLConnection
+    def http = new URL("${sapogApiUrl}?email=${email}").openConnection() as HttpURLConnection
 
     http.setRequestMethod('GET')
     http.setDoOutput(true)
@@ -178,7 +178,7 @@ def getSlackSaloUserByEmail(email) {
     if (http.responseCode == 200) {
       def sapogResponse = new JsonSlurper().parseText(http.inputStream.getText('UTF-8'))
       if(sapogResponse.success) {
-        userName = "${sapogResponse.data.name}";
+        userName = "${sapogResponse.mention}";
       } else {
         println("[ getSlackSaloUserByEmail ] response message: ${sapogResponse.message}")
       }
@@ -193,9 +193,9 @@ def getSlackSaloUserByEmail(email) {
 
 def getSlackSaloUserIdByEmail(email) {
   def userId = ''
-  def sapogSimpleApiUrl = env.SAPOG_SIMPLE_URL
+  def sapogApiUrl = env.SAPOG_URL
   try {
-    def http = new URL("${sapogSimpleApiUrl}${email}").openConnection() as HttpURLConnection
+    def http = new URL("${sapogApiUrl}?email=${email}").openConnection() as HttpURLConnection
 
     http.setRequestMethod('GET')
     http.setDoOutput(true)
@@ -206,7 +206,7 @@ def getSlackSaloUserIdByEmail(email) {
     if (http.responseCode == 200) {
       def sapogResponse = new JsonSlurper().parseText(http.inputStream.getText('UTF-8'))
       if(sapogResponse.success) {
-        userId = "${sapogResponse.data.user_id}";
+        userId = "${sapogResponse.id}";
       } else {
         println("[ getSlackSaloUserIdByEmail ] response message: ${sapogResponse.message}")
       }
