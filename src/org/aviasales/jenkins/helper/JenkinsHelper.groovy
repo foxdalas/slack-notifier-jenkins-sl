@@ -177,11 +177,7 @@ def getSlackSaloUserByEmail(email) {
 
     if (http.responseCode == 200) {
       def sapogResponse = new JsonSlurper().parseText(http.inputStream.getText('UTF-8'))
-      if(sapogResponse.success) {
-        userName = "${sapogResponse.mention}";
-      } else {
-        println("[ getSlackSaloUserByEmail ] response message: ${sapogResponse.message}")
-      }
+      userName = "${sapogResponse.mention}";
     } else {
       println("[ getSlackSaloUserByEmail ] response code: ${http.responseCode}")
     }
@@ -205,11 +201,7 @@ def getSlackSaloUserIdByEmail(email) {
 
     if (http.responseCode == 200) {
       def sapogResponse = new JsonSlurper().parseText(http.inputStream.getText('UTF-8'))
-      if(sapogResponse.success) {
-        userId = "${sapogResponse.id}";
-      } else {
-        println("[ getSlackSaloUserIdByEmail ] response message: ${sapogResponse.message}")
-      }
+      userId = "${sapogResponse.id}";
     } else {
       println("[ getSlackSaloUserIdByEmail ] response code: ${http.responseCode}")
     }
