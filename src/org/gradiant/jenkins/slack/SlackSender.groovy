@@ -25,18 +25,13 @@ def getOptions(String message = '', String color = '') {
       println("[ DEBUG ] BRANCH_NAME == master OR release*, using default params...")
     } else {
       def slackDirect = new Boolean(env.SLACK_DIRECT)
-      def slackDirectApiUrl = env.SLACK_DIRECT_API_URL
       if (slackDirect) {
-        if (slackDirectApiUrl != null || slackDirectApiUrl.size() != 0) {
-          JenkinsHelper helper = new JenkinsHelper()
-          def slackUser = helper.getSlackUserByGithub(slackDirectApiUrl)
-          if(slackUser != null || slackUser.size() != 0) {
-            obj.channel = slackUser
-          } else {
-            println("[ DEBUG ] slackUser == null OR size is zero")
-          }
+        JenkinsHelper helper = new JenkinsHelper()
+        def mention = helper.getSlackUserByGithub()
+        if(mention != null || mention.size() != 0) {
+          obj.channel = mention
         } else {
-          println("[ DEBUG ] slackDirectApiUrl == null OR size is zero")
+          println("[ DEBUG ] mention is empty")
         }
       } else {
         println("[ DEBUG ] env.SLACK_DIRECT false")
